@@ -1,0 +1,57 @@
+server:
+  port: 8003
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  instance:
+    hostname: localhost # eureka地址
+    port: 7000 #eureka 端口
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+
+logging:
+  level:
+    cn:
+      cloud: info
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: cn.cloud.sample.entity
+
+spring:
+  application:
+    name: account-server
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: fsp_tx_group
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: root
+    url: jdbc:mysql://127.0.0.1:3306/seat-account?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: root
+
+#seata配置
+seata:
+  enableAutoDataSourceProxy: false
+  client:
+    rm:
+      lock:
+        retryInterval: 30
+        retryTimes: 10
+    tm:
+      commitRetryCount: 3
+      rollbackRetryCount: 3
+  applicationId: account-server
+  service:
+    vgroupMapping:
+      fsp_tx_group: default
+    default:
+      grouplist: 127.0.0.1:8092

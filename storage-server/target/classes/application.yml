@@ -1,0 +1,66 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  instance:
+    hostname: localhost # eureka地址
+    port: 7000 #eureka 端口
+
+# 服务远程调用的时间配置
+feign:
+  client:
+    config:
+      default:           #服务名，填写default为所有服务
+        connectTimeout: 5000  #ribbon 连接超时时长
+        readTimeout: 10000     #ribbon 响应超时时长
+  hystrix:
+    enabled: true  #开启熔断降级
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 8000  #熔断超时时长
+
+
+logging:
+  level:
+    cn:
+      cloud: info
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: cn.cloud.sample.entity
+server:
+  port: 8002
+spring:
+  application:
+    name: storage-server
+  cloud:
+    alibaba:
+      seata:
+        tx-service-group: fsp_tx_group
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: root
+    url: jdbc:mysql://localhost:3306/seat-storage?useUnicode=true&serverTimezone=GMT%2B8&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: root
+
+#seata配置
+seata:
+  enableAutoDataSourceProxy: false
+  client:
+    rm:
+      lock:
+        retryInterval: 30
+        retryTimes: 10
+    tm:
+      commitRetryCount: 3
+      rollbackRetryCount: 3
+  applicationId: storage-server
+  service:
+    vgroup-mapping:
+      fsp_tx_group: default
+    default:
+      grouplist: 127.0.0.1:8091

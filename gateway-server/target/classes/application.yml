@@ -1,0 +1,33 @@
+server:
+  port: 8222
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  instance:
+    hostname: localhost # eureka地址
+    port: 7000 #eureka 端口
+
+spring:
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true
+      routes:
+        - id: account-server # 账号服务
+          uri: lb://ACCOUNT-SERVER # lb 注册中心 账号服务信息
+          predicates: # 转发路由
+            - Path=/as/**
+          filters:
+            - StripPrefix=1 # 转发过滤前缀 根据数字来过滤请求路径的前缀
+        - id: storage-server
+          uri: lb://STORAGE-SERVER
+          predicates:
+            - Path=/ss/**
+          filters:
+            - StripPrefix=1

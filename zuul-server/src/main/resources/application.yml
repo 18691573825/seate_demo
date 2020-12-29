@@ -1,0 +1,36 @@
+server:
+  port: 8111
+
+spring:
+  application:
+    name: zuul-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  instance:
+    hostname: localhost # eureka地址
+    port: 7000 #eureka 端口
+
+# zuul 网关相关配置 路由
+zuul:
+  routes:
+    account-server: /myaccount/**  # account服务相关信息路由
+    storage-server: /mystorage/**  # 店铺模块服务相关信息路由
+  host:
+    socket-timeout-millis: 10000
+    connect-timeout-millis: 10000
+
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+#
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 8000  #熔断超时时长
